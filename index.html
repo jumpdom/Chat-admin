@@ -18,7 +18,6 @@
     <div id="root" class="h-full w-full"></div>
 
     <script type="text/babel">
-        // Aapka Firebase Config yahan bhi add ho gaya hai
         const firebaseConfig = {
           apiKey: "AIzaSyBHnQxGTZXvSlJj77TWGFJLpPRQm6n_xOU",
           authDomain: "msg-jaan.firebaseapp.com",
@@ -44,7 +43,6 @@
 
             useEffect(() => {
                 const messagesRef = db.ref('messages');
-                
                 messagesRef.on('value', (snapshot) => {
                     const data = snapshot.val();
                     if (data) {
@@ -52,7 +50,6 @@
                         setMessages(list);
                     }
                 });
-
                 return () => messagesRef.off();
             }, []);
 
@@ -62,26 +59,32 @@
 
             const sendReply = () => {
                 if (!replyInput.trim()) return;
-
                 db.ref('messages').push({
                     sender: 'admin',
                     content: replyInput,
                     timestamp: firebase.database.ServerValue.TIMESTAMP
                 });
-
                 setReplyInput('');
+            };
+
+            const handleActionAlert = (type) => {
+                alert(`${type} feature is connecting from admin panel...`);
             };
 
             return (
                 <div class="h-full w-full flex flex-col max-w-md mx-auto border-x border-neutral-800 bg-black">
-                    {/* Header */}
+                    {/* Header with Call Icons */}
                     <div class="bg-neutral-900 p-4 pt-6 border-b border-neutral-800 flex items-center justify-between">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center text-white font-bold">A</div>
                             <div>
                                 <div class="text-white font-medium">Admin Monitor</div>
-                                <div class="text-xs text-green-500">Connected to Firebase</div>
+                                <div class="text-xs text-green-500">Connected</div>
                             </div>
+                        </div>
+                        <div class="flex items-center gap-5 text-xl text-red-500 pr-2">
+                            <button onClick={() => handleActionAlert('Audio Call')} className="p-1 hover:text-red-400"><i className="fas fa-phone"></i></button>
+                            <button onClick={() => handleActionAlert('Video Call')} className="p-1 hover:text-red-400"><i className="fas fa-video"></i></button>
                         </div>
                     </div>
 
@@ -98,13 +101,16 @@
                         <div ref={chatEndRef} />
                     </div>
 
-                    {/* Input Reply */}
+                    {/* Input Reply with Camera Icon */}
                     <div class="p-4 bg-neutral-900 border-t border-neutral-800 pb-6">
-                        <div class="flex gap-2">
+                        <div class="flex items-center gap-2">
+                            <button onClick={() => handleActionAlert('Photo Upload')} className="w-10 h-10 rounded-full bg-neutral-800 flex items-center justify-center text-neutral-400 hover:text-white">
+                                <i className="fas fa-camera text-lg"></i>
+                            </button>
                             <input type="text" value={replyInput} onChange={(e) => setReplyInput(e.target.value)}
-                                placeholder="Type a reply..." class="flex-1 bg-neutral-800 text-white px-4 py-3 rounded-full focus:outline-none" />
-                            <button onClick={sendReply} class="w-12 h-12 rounded-full bg-red-600 flex items-center justify-center">
-                                <i class="fas fa-paper-plane text-white"></i>
+                                placeholder="Type a reply..." class="flex-1 bg-neutral-800 text-white px-4 py-2.5 rounded-full focus:outline-none" />
+                            <button onClick={sendReply} class="w-11 h-11 rounded-full bg-red-600 flex items-center justify-center text-white">
+                                <i class="fas fa-paper-plane"></i>
                             </button>
                         </div>
                     </div>
